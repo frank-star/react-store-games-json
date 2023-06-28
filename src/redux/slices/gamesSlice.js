@@ -18,37 +18,31 @@ export const fetchGameById = createAsyncThunk(
   'games/fetchGameById',
   async (id) => {
     const response = await axios.get('/db/mock-games-data.json');
-    const game = Object.keys(response.data).filter((key) => key === id);
+    const gameId = Object.keys(response.data).find((key) => key === id);
 
-    return game ? response.data[game.at(0)] : null;
+    return gameId ? response.data[gameId] : null;
   },
 );
 
-const getCurrencies = (games) => {
-  const currencies = [];
-
-  Object.keys(games).forEach((key) =>
-    Object.keys(games[key].real).forEach((key) => {
-      if (!currencies.includes(key)) {
-        currencies.push(key);
+const getCurrencies = (games) =>
+  games.reduce((acc, game) => {
+    Object.keys(game.real).forEach((key) => {
+      if (!acc.includes(key)) {
+        acc.push(key);
       }
-    }),
-  );
+    });
 
-  return currencies;
-};
+    return acc;
+  }, []);
 
-const getProviders = (games) => {
-  const providers = [];
-
-  Object.keys(games).forEach((key) => {
-    if (!providers.includes(games[key].provider)) {
-      providers.push(games[key].provider);
+const getProviders = (games) =>
+  games.reduce((acc, game) => {
+    if (!acc.includes(game.provider)) {
+      acc.push(game.provider);
     }
-  });
 
-  return providers;
-};
+    return acc;
+  }, []);
 
 export const gamesSlice = createSlice({
   name: 'games',

@@ -43,7 +43,13 @@ const StorePage = () => {
   }, [list]);
 
   const handleChangeCurrency = (value) => {
-    const filteredList = filteredListByCurrency(list, value);
+    let filteredList = list;
+
+    filteredList = filteredListByCurrency(filteredList, value);
+
+    if (filterByProvider) {
+      filteredList = filteredListByProvider(filteredList, filterByProvider);
+    }
 
     setCurrentPage(1);
     setFilterByCurrency(value);
@@ -51,7 +57,13 @@ const StorePage = () => {
   };
 
   const handleChangeProvider = (value) => {
-    const filteredList = filteredListByProvider(list, value);
+    let filteredList = list;
+
+    if (filterByCurrency) {
+      filteredList = filteredListByCurrency(filteredList, filterByCurrency);
+    }
+
+    filteredList = filteredListByProvider(filteredList, value);
 
     setCurrentPage(1);
     setFilterByProvider(value);
